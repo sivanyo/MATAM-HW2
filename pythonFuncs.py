@@ -1,4 +1,5 @@
 import copy
+import Survey
 
 AGE_STARTING_POSITION_IN_LINE = 2
 MIN_AGE = 10
