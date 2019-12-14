@@ -1,4 +1,3 @@
-import copy
 import Survey
 
 AGE_STARTING_POSITION_IN_LINE = 2
@@ -7,11 +6,17 @@ MAX_AGE = 100
 MIN_SCORE = 1
 MAX_SCORE = 10
 ID_SIZE = 8
+GENDER_MAN = "Man"
+GENDER_WOMAN = "Woman"
+VEGAN = "Vegan"
+VEGETARIAN = "Vegetarian"
+OMNIVORE = "Omnivore"
 
 
 # Filters a survey and prints to screen the corrected answers:
 # old_survey_path: The path to the unfiltered survey
 def correct_myfile(old_survey_path):
+    # TODO: delete unnecessary prints when submitting
     lines_array = generate_initial_array_from_file(old_survey_path)
     # print('Our result array looks like this:')
     # for line in lines_array:
@@ -19,7 +24,11 @@ def correct_myfile(old_survey_path):
     unique_ids = generate_unique_ids_array(lines_array)
     # print('Unique IDs array:')
     # print(unique_ids)
-    filter_results(lines_array, copy.copy(unique_ids))
+    # TODO: check if this is necessary.
+    # temp_ids_list = []
+    # for i in range(len(unique_ids)):
+    #     temp_ids_list[i] = unique_ids[i]
+    filter_results(lines_array, unique_ids)
     sort_lines_by_id(lines_array)
     # print('Our result array looks like this:')
     # for line in lines_array:
@@ -27,27 +36,66 @@ def correct_myfile(old_survey_path):
     print_lines_array(lines_array)
 
 
+def parse_eating_habits(habits):
+    if habits == VEGAN:
+        return 0
+    elif habits == VEGETARIAN:
+        return 1
+    else:
+        return 2
+
+
 # Returns a new Survey item with the data of a new survey file:
 # survey_path: The path to the survey
 def scan_survey(survey_path):
-    pass
+    lines_array = generate_initial_array_from_file(survey_path)
+    survey = Survey.SurveyCreateSurvey()
+    for line in lines_array:
+        habits = parse_eating_habits(line[1])
+        python_scores_list = line[4:]
+        print(python_scores_list)
+        int_scores_array = Survey.SurveyCreateIntAr(5)
+        print("iterator is")
+        for i in range(0, 5, 1):
+            print("setting value {} into index {}".format(int(python_scores_list[i]),i))
+            Survey.SurveySetIntArIdxVal(int_scores_array, i, int(python_scores_list[i]))
+
+        Survey.SurveyAddPerson(survey, int(line[0]), int(line[2]), line[3] is GENDER_WOMAN, habits, int_scores_array)
+        Survey.SurveyDestoryIntAr(int_scores_array)
+
+    return survey
 
 
 # Prints a python list containing the number of votes for each rating of a group according to the arguments
-# s: the data of the Survey object
+# s: the data of the Survey objectx
 # choc_type: the number of the chocolate (between 0 and 4)
 # gender: the gender of the group (string of "Man" or "Woman"
 # min_age: the minimum age of the group (a number)
 # max_age: the maximum age of the group (a number)
 # eating_habits: the eating habits of the group (string of "Omnivore", "Vegan" or "Vegetarian")
 def print_info(s, choc_type, gender, min_age, max_age, eating_habits):
-    pass
+    habits = parse_eating_habits(eating_habits)
+    print(habits)
+    results = Survey.SurveyQuerySurvey(s, choc_type, gender, min_age, max_age, habits)
+    output = []
+    if results is None:
+        print(output)
+        return
+
+    for i in range(0, 10, 1):
+        output.append(Survey.SurveyGetIntArIdxVal(results, i))
+    print(output)
+    Survey.SurveyQueryDestroy(results)
+
+
+# //Returns an element of 'ar' of index 'idx'
+# int SurveyGetIntArIdxVal(int* ar, unsigned int idx);
 
 
 # Clears a Survey object data
 # s: the data of the Survey object
 def clear_survey(s):
-    pass
+    Survey.SurveyDestroySurvey(s)
 
 
 def generate_initial_array_from_file(old_survey_path):
