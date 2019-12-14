@@ -57,7 +57,7 @@ def scan_survey(survey_path):
 
 
 # Prints a python list containing the number of votes for each rating of a group according to the arguments
-# s: the data of the Survey objectx
+# s: the data of the Survey object
 # choc_type: the number of the chocolate (between 0 and 4)
 # gender: the gender of the group (string of "Man" or "Woman"
 # min_age: the minimum age of the group (a number)
@@ -181,13 +181,3 @@ def parse_eating_habits(habits):
         return 1
     else:
         return 2
-
-
-def main():
-    correct_myfile('./survey1')
-    print(' ')
-    correct_myfile('./survey2')
-
-
-if __name__ == '__main__':
-    main()
