@@ -41,7 +41,7 @@ def scan_survey(survey_path):
         # Generating int* array to store chocolate scores
         int_scores_array = Survey.SurveyCreateIntAr(NUM_OF_CHOCOLATES)
         # Inserting scores into int* array
-        for i in range(0, NUM_OF_CHOCOLATES):
+        for i in range(NUM_OF_CHOCOLATES):
             Survey.SurveySetIntArIdxVal(int_scores_array, i,
                                         int(python_scores_list[i]))
         # Converting gender bool to corresponding integer type in C
@@ -72,7 +72,7 @@ def print_info(s, choc_type, gender, min_age, max_age, eating_habits):
         print(output)
         return
 
-    for i in range(0, NUM_OF_SCORES):
+    for i in range(NUM_OF_SCORES):
         output.append(Survey.SurveyGetIntArIdxVal(results, i))
     print(output)
     Survey.SurveyQueryDestroy(results)
@@ -114,9 +114,11 @@ def generate_unique_ids_array(lines_array):
     """
     unique_ids = []
     for line in lines_array:
-        if line[0] not in unique_ids \
-                and len(line[0]) == ID_SIZE:
-            unique_ids.append(line[0])
+        # Remove spaces from input line for easy checks.
+        clean_line = list(filter(lambda a: a != '', line))
+        if clean_line[0] not in unique_ids \
+                and len(clean_line[0]) == ID_SIZE:
+            unique_ids.append(clean_line[0])
     return unique_ids
 
 
@@ -124,6 +126,7 @@ def check_valid_information(line):
     """
     This function checks if a line entry in the survey contains
     """
+    # Remove spaces from input line for easy checks.
     clean_line = list(filter(lambda a: a != '', line))
     if int(clean_line[AGE_STARTING_POSITION_IN_LINE]) < MIN_AGE \
             or int(clean_line[AGE_STARTING_POSITION_IN_LINE]) > MAX_AGE:
