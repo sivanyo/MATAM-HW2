@@ -65,7 +65,8 @@ def scan_survey(survey_path):
 # eating_habits: the eating habits of the group (string of "Omnivore", "Vegan" or "Vegetarian")
 def print_info(s, choc_type, gender, min_age, max_age, eating_habits):
     habits = parse_eating_habits(eating_habits)
-    results = Survey.SurveyQuerySurvey(s, choc_type, gender, min_age, max_age, habits)
+    results = Survey.SurveyQuerySurvey(s, choc_type, gender, min_age,
+                                       max_age, habits)
     output = []
     if results is None:
         print(output)
