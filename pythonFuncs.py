@@ -25,9 +25,9 @@ SCORES_STARTING_INDEX = 4
 def correct_myfile(old_survey_path):
     lines_array = generate_initial_array_from_file(old_survey_path)
     unique_ids = generate_unique_ids_array(lines_array)
-    result_arr = filter_results(lines_array, unique_ids)
-    sort_lines_by_id(result_arr)
-    print_lines_array(result_arr)
+    filter_results(lines_array, unique_ids)
+    sort_lines_by_id(lines_array)
+    print_lines_array(lines_array)
 
 
 # Returns a new Survey item with the data of a new survey file:
@@ -143,20 +143,6 @@ def filter_results(lines_array, unique_ids):
         else:
             lines_array.remove(line)
     return lines_array
-
-
-# def filter_results(lines_array, unique_ids):
-#     results_arr = []
-#     for line in lines_array[::-1]:
-#         if line[0] in unique_ids:
-#             if check_valid_information(line):
-#                 unique_ids.remove(line[0])
-#                 results_arr.append(line)
-#             else:
-#                 lines_array.remove(line)
-#         else:
-#             lines_array.remove(line)
-#     return results_arr
 
 
 def print_lines_array(lines_array):
