@@ -25,9 +25,9 @@ SCORES_STARTING_INDEX = 4
 def correct_myfile(old_survey_path):
     lines_array = generate_initial_array_from_file(old_survey_path)
     unique_ids = generate_unique_ids_array(lines_array)
-    filter_results(lines_array, unique_ids)
-    sort_lines_by_id(lines_array)
-    print_lines_array(lines_array)
+    result_arr = filter_results(lines_array, unique_ids)
+    sort_lines_by_id(result_arr)
+    print_lines_array(result_arr)
 
 
 # Returns a new Survey item with the data of a new survey file:
@@ -41,7 +41,7 @@ def scan_survey(survey_path):
         # Generating int* array to store chocolate scores
         int_scores_array = Survey.SurveyCreateIntAr(NUM_OF_CHOCOLATES)
         # Inserting scores into int* array
-        for i in range(0, NUM_OF_CHOCOLATES, 1):
+        for i in range(0, NUM_OF_CHOCOLATES):
             Survey.SurveySetIntArIdxVal(int_scores_array, i,
                                         int(python_scores_list[i]))
         # Converting gender bool to corresponding integer type in C
@@ -71,7 +71,7 @@ def print_info(s, choc_type, gender, min_age, max_age, eating_habits):
         print(output)
         return
 
-    for i in range(0, NUM_OF_SCORES, 1):
+    for i in range(0, NUM_OF_SCORES):
         output.append(Survey.SurveyGetIntArIdxVal(results, i))
     print(output)
     Survey.SurveyQueryDestroy(results)
@@ -112,10 +112,10 @@ def generate_unique_ids_array(lines_array):
     from the list of available ID entries.
     """
     unique_ids = []
-    for i in range(len(lines_array)):
-        if lines_array[i][0] not in unique_ids \
-                and len(lines_array[i][0]) == ID_SIZE:
-            unique_ids.append(lines_array[i][0])
+    for line in lines_array:
+        if line[0] not in unique_ids \
+                and len(line[0]) == ID_SIZE:
+            unique_ids.append(line[0])
     return unique_ids
 
 
@@ -123,25 +123,40 @@ def check_valid_information(line):
     """
     This function checks if a line entry in the survey contains
     """
-    if int(line[AGE_STARTING_POSITION_IN_LINE]) < MIN_AGE \
-            or int(line[AGE_STARTING_POSITION_IN_LINE]) > MAX_AGE:
+    clean_line = list(filter(lambda a: a != '', line))
+    if int(clean_line[AGE_STARTING_POSITION_IN_LINE]) < MIN_AGE \
+            or int(clean_line[AGE_STARTING_POSITION_IN_LINE]) > MAX_AGE:
         return False
-    for i in range(len(line) - 4, 1, len(line)):
-        if int(line[i]) < MIN_SCORE or int(line[i]) > MAX_SCORE:
+    for score in clean_line[4:]:
+        if int(score) < MIN_SCORE or int(score) > MAX_SCORE:
             return False
     return True
 
 
 def filter_results(lines_array, unique_ids):
-    for i in range(len(lines_array) - 1, -1, -1):
-        if lines_array[i][0] in unique_ids:
-            if check_valid_information(lines_array[i]):
-                unique_ids.remove(lines_array[i][0])
+    for line in lines_array[::-1]:
+        if line[0] in unique_ids:
+            if check_valid_information(line):
+                unique_ids.remove(line[0])
             else:
-                lines_array.remove(lines_array[i])
+                lines_array.remove(line)
         else:
-            lines_array.remove(lines_array[i])
+            lines_array.remove(line)
     return lines_array
+
+
+# def filter_results(lines_array, unique_ids):
+#     results_arr = []
+#     for line in lines_array[::-1]:
+#         if line[0] in unique_ids:
+#             if check_valid_information(line):
+#                 unique_ids.remove(line[0])
+#                 results_arr.append(line)
+#             else:
+#                 lines_array.remove(line)
+#         else:
+#             lines_array.remove(line)
+#     return results_arr
 
 
 def print_lines_array(lines_array):
@@ -156,8 +171,8 @@ def print_survey_line(line):
     """
     This function prints a single line in the survey file format
     """
-    for i in range(0, len(line) - 1):
-        print(line[i], end=" ")
+    for word in line[:-1]:
+        print(word, end=" ")
     print(line[-1])
 
 
