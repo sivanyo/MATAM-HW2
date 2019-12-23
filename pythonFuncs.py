@@ -68,10 +68,6 @@ def print_info(s, choc_type, gender, min_age, max_age, eating_habits):
     results = Survey.SurveyQuerySurvey(s, choc_type, gender, min_age,
                                        max_age, habits)
     output = []
-    if results is None:
-        print(output)
-        return
-
     for i in range(NUM_OF_SCORES):
         output.append(Survey.SurveyGetIntArIdxVal(results, i))
     print(output)
